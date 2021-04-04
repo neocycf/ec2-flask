@@ -26,4 +26,3 @@
     - name: Insert data to table
       shell: mysql -u root < mydb.sql  
        
-
