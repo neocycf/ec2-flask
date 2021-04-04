@@ -1,0 +1,6 @@
+127.0.0.1 ansible_connection=local
+
+[ec2_instance]
+#13.115.201.231 ansible_user=ec2-user ansible_ssh_private_key_file=keys/ansible_keypair.pem ansible_ssh_extra_args='-o StrictHostKeyChecking=no'
+#3.112.132.153 ansible_user=ec2-user ansible_ssh_private_key_file=keys/ansible_keypair.pem
+18.181.118.243 ansible_user=ec2-user ansible_ssh_private_key_file=keys/ansible_keypair.pem

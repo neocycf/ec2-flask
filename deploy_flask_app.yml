@@ -1,0 +1,27 @@
+---
+- hosts: ec2_instance
+  become: True
+  gather_facts: False
+  tasks:
+
+    - name: Install dependencies
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - python36
+
+    - name: Install flask
+      pip:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - flask
+        - mysql-connector-python
+    
+    - name: Copy app.py
+      copy:
+        src: app.py
+        dest: /
+
+

@@ -1,0 +1,53 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: False
+
+    #  vars:
+    #    keypair: "{{ key_name }}"
+    #    region: "{{ region_name }}"
+    #    image: "{{ ami_id }}" 
+    #    id: "ansible-ec2"
+    #    sec_group: "{{ id }}-sec"
+    #
+  tasks:
+
+    - name: Provisioning EC2 instances
+      block:
+      - name: Create security group
+        ec2_group:
+          name: "{{ instance_name }}-sg"
+          description: "Security group for {{ instance_name }}"
+          region: "{{ region_name }}"
+          aws_access_key: "{{ec2_access_key}}"
+          aws_secret_key: "{{ec2_secret_key}}"
+          rules:
+            - proto: tcp
+              ports:
+                - 22
+              cidr_ip: 0.0.0.0/0
+              rule_desc: allow all on ssh port
+        register: result_sec_group
+
+      - name: Create instance
+        community.aws.ec2_instance:
+          aws_access_key: "{{ec2_access_key}}"
+          aws_secret_key: "{{ec2_secret_key}}"
+          name: "{{ instance_name }}"
+          key_name: "{{ key_name }}"
+          security_group: "{{ result_sec_group.group_id }}"
+          image_id: "{{ ami_id }}"
+          instance_type: "{{ instance_type }}"
+          region: "{{ region_name }}"
+          wait: True
+        register: ec2
+
+      - name: Add the newly created EC2 instance to hosts file
+        ansible.builtin.lineinfile: 
+          path: hosts
+          regexp: "{{ item.public_ip_address }}" 
+          insertafter: "[ec2_instance]"
+          line: "{{ item.public_ip_address }} ansible_user=ec2-user ansible_ssh_private_key_file=keys/{{ key_name }}.pem" 
+            #line: "{{ item.public_ip_address }} ansible_user=ec2-user ansible_ssh_private_key_file=keys/{{ keypair }}.pem ansible_ssh_extra_args='-o StrictHostKeyChecking=no'"
+        with_items: "{{ ec2.instances }}"

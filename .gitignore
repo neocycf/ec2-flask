@@ -1,0 +1,3 @@
+note
+keys/**
+group_vars/all/pass.yml

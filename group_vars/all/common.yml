@@ -1,0 +1,5 @@
+region_name: 'ap-northeast-1'
+key_name: 'ansible_keypair'
+ami_id: 'ami-0dc185deadd3ac449'
+instance_type: 't2.micro'
+instance_name: 'ansible-box-2'

@@ -1,0 +1,29 @@
+---
+- hosts: ec2_instance
+  become: True
+  gather_facts: False
+  tasks:
+
+    - name: Install MySQL
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - mysql-server
+        - python3-PyMySQL
+
+    - name: Start MySQL
+      service:
+        name: mysqld
+        state: started
+        enabled: yes
+
+    - name: Create test database
+      mysql_db: 
+        name: mydb
+        state: present
+
+    - name: Insert data to table
+      shell: mysql -u root < mydb.sql  
+       
+
