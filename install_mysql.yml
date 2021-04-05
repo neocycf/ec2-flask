@@ -23,6 +23,11 @@
         name: mydb
         state: present
 
+    - name: Copy mydb.sql
+      copy:
+        src: mydb.sql
+        dest: /tmp
+          
     - name: Insert data to table
-      shell: mysql -u root < mydb.sql  
+      shell: mysql -u root < /tmp/mydb.sql  
        

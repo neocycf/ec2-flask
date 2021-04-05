@@ -1,5 +1,5 @@
 ---
-  - include: deploy_ec2.yml
-  - include: install_mysql.yml
-  - include: deploy_flask_app.yml
+- import_playbook: deploy_ec2.yml
+- import_playbook: install_mysql.yml
+- import_playbook: deploy_flask_app.yml
 

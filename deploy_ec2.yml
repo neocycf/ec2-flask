@@ -35,11 +35,19 @@
           region: "{{ region_name }}"
           wait: True
         register: ec2
+          
+      #- name: Add the newly created EC2 instance to hosts file
+      #  ansible.builtin.lineinfile: 
+      #    path: hosts
+      #    regexp: "{{ item.public_ip_address }}" 
+      #    insertafter: "[ec2_instance]"
+      #    line: "{{ item.public_ip_address }} ansible_user=ec2-user ansible_ssh_private_key_file=keys/{{ key_name }}.pem" 
+      #  with_items: "{{ ec2.instances }}"
+          
+      # add_host will add to ansible-playbook in-memory inventory, not writing to static hosts file
+      - name: Add new instance to host group
+        add_host:
+          hostname: "{{ item.public_ip_address }}"
+          groups: ec2_instance
+        loop: "{{ ec2.instances }}"
 
-      - name: Add the newly created EC2 instance to hosts file
-        ansible.builtin.lineinfile: 
-          path: hosts
-          regexp: "{{ item.public_ip_address }}" 
-          insertafter: "[ec2_instance]"
-          line: "{{ item.public_ip_address }} ansible_user=ec2-user ansible_ssh_private_key_file=keys/{{ key_name }}.pem" 
-        with_items: "{{ ec2.instances }}"
